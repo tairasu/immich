@@ -331,7 +331,12 @@ export const withError = async <T>(fn: () => Promise<T>): Promise<[undefined, T]
 };
 
 export const suggestDuplicateByFileSize = (assets: AssetResponseDto[]): AssetResponseDto | undefined => {
-  return sortBy(assets, (asset) => asset.exifInfo?.fileSizeInByte).pop();
+  const heicAssets = assets.filter(asset => asset.exifInfo?.fileType === 'HEIC');
+  if (heicAssets.length > 0) {
+    return sortBy(heicAssets, (asset) => asset.exifInfo?.fileSizeInByte).pop();
+  } else {
+    return sortBy(assets, (asset) => asset.exifInfo?.fileSizeInByte).pop();
+  }
 };
 
 // eslint-disable-next-line unicorn/prefer-code-point
